@@ -1,21 +1,41 @@
 import streamlit as st
-import pickle
+import pandas as pd
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
-# Load the trained model
-with open('trained_decision_tree_pickle.pkl', 'rb') as file:
-    model = pickle.load(file)
+# ---------------------------
+# Create Dataset (inside code)
+# ---------------------------
+data = {
+    "Area": [800, 1000, 1200, 1500, 1800, 2000, 2300, 2600],
+    "Bedrooms": [2, 2, 3, 3, 4, 4, 5, 5],
+    "Bathrooms": [1, 2, 2, 3, 3, 4, 4, 5],
+    "Price": [3000000, 4000000, 5000000, 6500000, 8000000, 9000000, 11000000, 13000000]
+}
 
-st.title("Decision Tree Prediction App")
-st.write("Enter the input values to get the prediction.")
+df = pd.DataFrame(data)
 
-# Example: assuming your model expects 3 features (change according to your model)
-feature1 = st.number_input("Feature 1")
-feature2 = st.number_input("Feature 2")
-feature3 = st.number_input("Feature 3")
+# ---------------------------
+# Train Model
+# ---------------------------
+X = df[["Area", "Bedrooms", "Bathrooms"]]
+y = df["Price"]
 
-# Prediction
-if st.button("Predict"):
-    input_data = np.array([[feature1, feature2, feature3]])
+model = LinearRegression()
+model.fit(X, y)
+
+# ---------------------------
+# Streamlit UI
+# ---------------------------
+st.title("🏠 House Price Predictor")
+st.write("This app trains the model automatically and predicts house price.")
+
+area = st.number_input("Area (sq ft)", min_value=500, max_value=5000, value=1200)
+bedrooms = st.number_input("Bedrooms", min_value=1, max_value=10, value=3)
+bathrooms = st.number_input("Bathrooms", min_value=1, max_value=10, value=2)
+
+if st.button("Predict Price"):
+    input_data = np.array([[area, bedrooms, bathrooms]])
     prediction = model.predict(input_data)
-    st.success(f"The predicted value is: {prediction[0]}")
+    st.success(f"💰 Predicted House Price: ₹{prediction[0]:,.2f}")
+
