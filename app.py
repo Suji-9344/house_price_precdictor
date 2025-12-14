@@ -3,23 +3,19 @@ import pickle
 import numpy as np
 
 # Load the trained model
-with open("trained_house_pricing_LR_model.pkl", "rb") as file:
+with open('trained_decision_tree_pickle.pkl', 'rb') as file:
     model = pickle.load(file)
 
-st.title("House Price Prediction App")
-st.write("Predict house price based on input features")
+st.title("Decision Tree Prediction App")
+st.write("Enter the input values to get the prediction.")
 
-# Input fields for features
-# (Adjust feature names and number according to your model)
-# Example assumes 3 features: "Size (sqft)", "Bedrooms", "Age of House"
-size = st.number_input("Size (sqft)", min_value=100, max_value=10000, value=1000)
-bedrooms = st.number_input("Number of Bedrooms", min_value=1, max_value=10, value=3)
-age = st.number_input("Age of House (years)", min_value=0, max_value=100, value=10)
+# Example: assuming your model expects 3 features (change according to your model)
+feature1 = st.number_input("Feature 1")
+feature2 = st.number_input("Feature 2")
+feature3 = st.number_input("Feature 3")
 
-# Create input array
-input_features = np.array([[size, bedrooms, age]])
-
-# Prediction button
-if st.button("Predict Price"):
-    prediction = model.predict(input_features)
-    st.success(f"Estimated House Price: ${prediction[0]:,.2f}")
+# Prediction
+if st.button("Predict"):
+    input_data = np.array([[feature1, feature2, feature3]])
+    prediction = model.predict(input_data)
+    st.success(f"The predicted value is: {prediction[0]}")
